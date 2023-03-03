@@ -25,4 +25,5 @@ public class Location {
     public Location() {
         Id = UUID.randomUUID();
     }
+
 }

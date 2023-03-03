@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import org.json.JSONObject;
+
 import java.util.UUID;
 
 import ch.supsi.dti.isin.meteoapp.R;
@@ -25,6 +27,17 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //get data from api
+
+        //do http request from openweather api
+
+        JSONObject json = new JSONObject();
+        String city=savedInstanceState.getString(EXTRA_LOCATION_ID);
+        String url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=8ee77de7c0d74ad71c1aa7e069710ff7";
+
+        //do request and get json
+
+
         setContentView(R.layout.fragment_single_fragment);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);

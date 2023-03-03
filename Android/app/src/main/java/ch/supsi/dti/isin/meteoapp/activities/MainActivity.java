@@ -1,19 +1,57 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
+import ch.supsi.dti.isin.meteoapp.model.GPSCoordinates;
+import ch.supsi.dti.isin.meteoapp.model.Location;
+import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 public class MainActivity extends AppCompatActivity {
+    private int REQUEST_CODE;
+    private Bundle savedInstanceStateGlobal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        savedInstanceStateGlobal = savedInstanceState;
+        requestPermissions();
+    }
+    public void requestPermissions(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            open();
+
+        }
+    }
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // ho ottenuto i permessi
+                    open();
+                }
+                return;
+            }
+        }
+    }
+    private void open(){
         setContentView(R.layout.fragment_single_fragment);
+        geolocate();
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -21,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
+
         }
     }
+
+    private void geolocate(){
+        Location location =new Location();
+        GPSCoordinates coordinates=LocationsHolder.getLocalLocation(this,location);
+    }
+
+
 }
