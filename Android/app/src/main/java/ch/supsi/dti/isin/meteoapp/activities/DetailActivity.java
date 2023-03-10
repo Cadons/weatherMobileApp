@@ -40,12 +40,12 @@ public class DetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.fragment_single_fragment);
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        Fragment fragment = fm.findFragmentById(R.id.main_container);
         if (fragment == null) {
             UUID locationId = (UUID) getIntent().getSerializableExtra(EXTRA_LOCATION_ID);
             fragment = new DetailLocationFragment().newInstance(locationId);
             fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .add(R.id.main_container, fragment)
                     .commit();
         }
     }

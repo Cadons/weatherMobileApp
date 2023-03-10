@@ -1,12 +1,11 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
-import static android.webkit.ConsoleMessage.MessageLevel.LOG;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -29,6 +28,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         savedInstanceStateGlobal = savedInstanceState;
         requestPermissions();
+
+        Button geolocateButton= findViewById(R.id.geolocate_btn);
+        geolocateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
     public void requestPermissions(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
