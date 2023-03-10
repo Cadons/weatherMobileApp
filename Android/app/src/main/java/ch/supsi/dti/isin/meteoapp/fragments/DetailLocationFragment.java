@@ -19,6 +19,8 @@ public class DetailLocationFragment extends Fragment {
     private Location mLocation;
     private TextView mIdTextView;
 
+    private TextView mNameTextView;
+
     public static DetailLocationFragment newInstance(UUID locationId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_LOCATION_ID, locationId);
@@ -40,7 +42,7 @@ public class DetailLocationFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_detail_location, container, false);
 
         mIdTextView = v.findViewById(R.id.id_textView);
-        mIdTextView.setText(mLocation.getId().toString());
+        mIdTextView.setText(mLocation.getName());
 
         return v;
     }
