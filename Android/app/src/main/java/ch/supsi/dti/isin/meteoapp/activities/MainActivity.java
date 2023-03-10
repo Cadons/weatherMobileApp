@@ -22,6 +22,7 @@ import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 public class MainActivity extends AppCompatActivity {
     private int REQUEST_CODE;
+    private GPSCoordinates coordinates;
     private Bundle savedInstanceStateGlobal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void geolocate(){
         Location location =new Location();
-        GPSCoordinates coordinates=LocationsHolder.getLocalLocation(this,location);
+         coordinates=LocationsHolder.getLocalLocation(this,location);
     }
 
 
