@@ -1,6 +1,7 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import java.util.UUID;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
@@ -29,10 +32,17 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceStateGlobal = savedInstanceState;
         requestPermissions();
 
-        Button geolocateButton= findViewById(R.id.geolocate_btn);
-        geolocateButton.setOnClickListener(new View.OnClickListener() {
+        //button to get the location
+        Button locateButton= findViewById(R.id.geolocate_btn);
+        locateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                geolocate();
+                Intent intent = DetailActivity.newIntent(MainActivity.this);
+
+                intent.putExtra("gps_longitude", coordinates.getLongitude());
+                intent.putExtra("gps_latitude", coordinates.getLatitude());
+                startActivity(intent);
 
             }
         });

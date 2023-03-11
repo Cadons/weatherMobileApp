@@ -33,7 +33,10 @@ public class DetailActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_LOCATION_ID, locationId);
         return intent;
     }
-
+    public static Intent newIntent(Context packageContext) {
+        Intent intent = new Intent(packageContext, DetailActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +53,7 @@ public class DetailActivity extends AppCompatActivity {
         //do request and get json
 
 
-        setContentView(R.layout.fragment_single_fragment);
+        setContentView(R.layout.details_fragment_container);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.main_container);
         if (fragment == null) {
