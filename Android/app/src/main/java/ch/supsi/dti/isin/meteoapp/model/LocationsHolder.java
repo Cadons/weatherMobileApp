@@ -71,4 +71,8 @@ public class LocationsHolder {
 
         return null;
     }
+
+    public void addLocation(Location location) {
+        mLocations.add(location);
+    }
 }
