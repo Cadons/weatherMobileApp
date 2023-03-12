@@ -1,7 +1,9 @@
 package ch.supsi.dti.isin.meteoapp.fragments;
 
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +20,6 @@ public class DetailLocationFragment extends Fragment {
 
     private Location mLocation;
     private TextView mIdTextView;
-
-    private TextView mNameTextView;
 
     public static DetailLocationFragment newInstance(UUID locationId) {
         Bundle args = new Bundle();
@@ -43,8 +43,9 @@ public class DetailLocationFragment extends Fragment {
 
         mIdTextView = v.findViewById(R.id.id_textView);
         mIdTextView.setText(mLocation.getName());
-
         return v;
     }
+
+
 }
 

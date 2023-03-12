@@ -1,5 +1,6 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import ch.supsi.dti.isin.meteoapp.fragments.DetailLocationFragment;
 import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
 import ch.supsi.dti.isin.meteoapp.model.Location;
 import ch.supsi.dti.isin.meteoapp.model.LocationDB;
+import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_LOCATION_ID = "ch.supsi.dti.isin.meteoapp.location_id";
@@ -50,16 +52,18 @@ public class DetailActivity extends AppCompatActivity {
         //do request and get json
 
 
-        setContentView(R.layout.fragment_single_fragment);
+        setContentView(R.layout.fragment_detail_location);
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.main_container);
+        Fragment fragment = fm.findFragmentById(R.id.detail_container);
         if (fragment == null) {
             UUID locationId = (UUID) getIntent().getSerializableExtra(EXTRA_LOCATION_ID);
-            fragment = new DetailLocationFragment().newInstance(locationId);
+            fragment = DetailLocationFragment.newInstance(locationId);
             fm.beginTransaction()
-                    .add(R.id.main_container, fragment)
+                    .add(R.id.detail_container, fragment)
                     .commit();
         }
     }
+
+
 
 }
