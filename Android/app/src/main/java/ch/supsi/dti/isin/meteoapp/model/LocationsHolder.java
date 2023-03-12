@@ -26,17 +26,50 @@ public class LocationsHolder {
         return sLocationsHolder;
     }
 
+//    private LocationsHolder(Context context) {
+//        mLocations = new ArrayList<>();
+//
+//        Location location1 = new Location();
+//        location1.setName("Lugano");
+//
+//
+//        Location location2 = new Location();
+//        location2.setName("Locarno");
+//
+//
+//        Location location3 = new Location();
+//        location3.setName("Bellinzona");
+//
+//
+//        Location newLocation = new Location();
+//        newLocation.setName("Praga");
+//
+//        Location newLocation2 = new Location();
+//        newLocation2.setName("Lugano");
+//
+//        Location newLocation3 = new Location();
+//        newLocation3.setName("Locarno");
+//
+//        Location newLocation4 = new Location();
+//        newLocation4.setName("Bellinzona");
+//
+//        this.addLocation(location1);
+//        this.addLocation(location2);
+//        this.addLocation(location3);
+//        this.addLocation(newLocation);
+//        this.addLocation(newLocation2);
+//        this.addLocation(newLocation3);
+//        this.addLocation(newLocation4);
+//    }
+
     private LocationsHolder(Context context) {
         mLocations = new ArrayList<>();
-        Location location1 = new Location();
-        location1.setName("Lugano");
-        mLocations.add(location1);
-        Location location2 = new Location();
-        location2.setName("Locarno");
-        mLocations.add(location2);
-        Location location3 = new Location();
-        location3.setName("Bellinzona");
-        mLocations.add(location3);
+        for (int i = 0; i < 10; i++) {
+            Location location = new Location();
+            location.setName("Location # " + i);
+            //mLocations.add(location);
+            this.addLocation(location);
+        }
     }
 
     public List<Location> getLocations() {
@@ -44,7 +77,7 @@ public class LocationsHolder {
     }
 
     public static GPSCoordinates getLocalLocation(Context context, final Location location) {
-        GPSCoordinates gpsCoordinates = new GPSCoordinates(0,0);
+        GPSCoordinates gpsCoordinates = new GPSCoordinates(0, 0);
         //smartlocation get location
         LocationParams.Builder builder = new LocationParams.Builder();
         builder.setAccuracy(LocationAccuracy.HIGH);
@@ -52,14 +85,14 @@ public class LocationsHolder {
         builder.setInterval(1000);
         SmartLocation.with(context).location().continuous().config(builder.build())
                 .start(new OnLocationUpdatedListener() {
-            @Override
-            public void onLocationUpdated(android.location.Location location) {
-                Log.d(TAG, "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
-                gpsCoordinates.setLatitude(location.getLatitude());
-                gpsCoordinates.setLongitude(location.getLongitude());
+                    @Override
+                    public void onLocationUpdated(android.location.Location location) {
+                        Log.d(TAG, "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
+                        gpsCoordinates.setLatitude(location.getLatitude());
+                        gpsCoordinates.setLongitude(location.getLongitude());
 
-            }
-        });
+                    }
+                });
         return gpsCoordinates;
     }
 

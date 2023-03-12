@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -23,13 +22,14 @@ public class MainActivity extends AppCompatActivity {
     private int REQUEST_CODE;
     private GPSCoordinates coordinates;
     private Bundle savedInstanceStateGlobal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         savedInstanceStateGlobal = savedInstanceState;
         requestPermissions();
 
-        Button geolocateButton= findViewById(R.id.geolocate_btn);
+        Button geolocateButton = findViewById(R.id.geolocate_btn);
         geolocateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public void requestPermissions(){
+
+    public void requestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
@@ -57,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void open(){
+
+    private void open() {
         setContentView(R.layout.fragment_single_fragment);
         geolocate();
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -71,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void geolocate(){
-        Location location =new Location();
-         coordinates=LocationsHolder.getLocalLocation(this,location);
+
+    private void geolocate() {
+        Location location = new Location();
+        coordinates = LocationsHolder.getLocalLocation(this, location);
     }
 
 

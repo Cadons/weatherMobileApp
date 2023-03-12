@@ -1,34 +1,20 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
-import org.json.JSONObject;
-
-import java.util.List;
 import java.util.UUID;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.DetailLocationFragment;
-import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
-import ch.supsi.dti.isin.meteoapp.model.Location;
-import ch.supsi.dti.isin.meteoapp.model.LocationDB;
-import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_LOCATION_ID = "ch.supsi.dti.isin.meteoapp.location_id";
-
-    private ViewPager mViewPager;
-    private List<Location> mLocations;
 
     public static Intent newIntent(Context packageContext, UUID locationId) {
         Intent intent = new Intent(packageContext, DetailActivity.class);
@@ -57,13 +43,12 @@ public class DetailActivity extends AppCompatActivity {
         Fragment fragment = fm.findFragmentById(R.id.detail_container);
         if (fragment == null) {
             UUID locationId = (UUID) getIntent().getSerializableExtra(EXTRA_LOCATION_ID);
-            fragment = DetailLocationFragment.newInstance(locationId);
+            fragment = new DetailLocationFragment().newInstance(locationId);
             fm.beginTransaction()
                     .add(R.id.detail_container, fragment)
                     .commit();
         }
     }
-
 
 
 }
