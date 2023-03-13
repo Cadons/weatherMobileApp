@@ -41,6 +41,8 @@ public class DetailLocationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_detail_location, container, false);
 
+        if(mLocation == null)
+            return v;
         mIdTextView = v.findViewById(R.id.id_textView);
         mIdTextView.setText(mLocation.getName());
         return v;

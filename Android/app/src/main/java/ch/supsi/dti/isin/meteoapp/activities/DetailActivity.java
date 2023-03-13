@@ -3,6 +3,7 @@ package ch.supsi.dti.isin.meteoapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -15,10 +16,19 @@ import ch.supsi.dti.isin.meteoapp.fragments.DetailLocationFragment;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_LOCATION_ID = "ch.supsi.dti.isin.meteoapp.location_id";
+    //create gps latitude and gps latitude like the previous instruction
+
 
     public static Intent newIntent(Context packageContext, UUID locationId) {
         Intent intent = new Intent(packageContext, DetailActivity.class);
         intent.putExtra(EXTRA_LOCATION_ID, locationId);
+        return intent;
+    }
+    public static Intent newIntent(Context packageContext, double latitude, double longitude) {
+        Intent intent = new Intent(packageContext, DetailActivity.class);
+
+        //search location by coordinates and set location id
+        intent.putExtra(EXTRA_LOCATION_ID, new UUID(0,0));
         return intent;
     }
 
@@ -41,8 +51,14 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_detail_location);
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.detail_container);
+        UUID locationId=new UUID(0,0);
         if (fragment == null) {
-            UUID locationId = (UUID) getIntent().getSerializableExtra(EXTRA_LOCATION_ID);
+
+            if(getIntent().hasExtra(EXTRA_LOCATION_ID)) {
+
+                locationId= (UUID) getIntent().getSerializableExtra(EXTRA_LOCATION_ID);
+            }
+
             fragment = new DetailLocationFragment().newInstance(locationId);
             fm.beginTransaction()
                     .add(R.id.detail_container, fragment)
