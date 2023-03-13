@@ -1,20 +1,28 @@
 package ch.supsi.dti.isin.meteoapp.fragments;
 
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.Objects;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.activities.DetailActivity;
@@ -55,19 +63,50 @@ public class ListFragment extends Fragment {
 
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add:
-                Toast toast = Toast.makeText(getActivity(),
-                        "Add a location",
-                        Toast.LENGTH_SHORT);
-                toast.show();
+                // create a new AlertDialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
+                builder.setTitle("Add a location");
+
+                // Set up the input
+                final EditText input = new EditText(getActivity());
+                input.setInputType(InputType.TYPE_CLASS_TEXT);
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @SuppressLint("NotifyDataSetChanged")
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String cityName = input.getText().toString();
+
+                        // Create a new location and add it to the list
+                        Location newLocation = new Location();
+                        newLocation.setName(cityName);
+                        LocationsHolder.get(getActivity()).addLocation(newLocation);
+
+                        // Notify the adapter of the addition
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     // Holder
 

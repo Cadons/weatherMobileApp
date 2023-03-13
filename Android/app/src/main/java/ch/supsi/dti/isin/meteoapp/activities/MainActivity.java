@@ -1,20 +1,16 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import java.util.UUID;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
@@ -26,28 +22,23 @@ public class MainActivity extends AppCompatActivity {
     private int REQUEST_CODE;
     private GPSCoordinates coordinates;
     private Bundle savedInstanceStateGlobal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         savedInstanceStateGlobal = savedInstanceState;
         requestPermissions();
 
-        //button to get the location
-        Button locateButton= findViewById(R.id.geolocate_btn);
-        locateButton.setOnClickListener(new View.OnClickListener() {
+        Button geolocateButton = findViewById(R.id.geolocate_btn);
+        geolocateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                geolocate();
-                Intent intent = DetailActivity.newIntent(MainActivity.this);
-
-                intent.putExtra("gps_longitude", coordinates.getLongitude());
-                intent.putExtra("gps_latitude", coordinates.getLatitude());
-                startActivity(intent);
 
             }
         });
     }
-    public void requestPermissions(){
+
+    public void requestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -56,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
@@ -67,9 +59,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    private void open(){
+
+    private void open() {
         setContentView(R.layout.fragment_single_fragment);
         geolocate();
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -81,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void geolocate(){
-        Location location =new Location();
-         coordinates=LocationsHolder.getLocalLocation(this,location);
+
+    private void geolocate() {
+        Location location = new Location();
+        coordinates = LocationsHolder.getLocalLocation(this, location);
     }
 
 
