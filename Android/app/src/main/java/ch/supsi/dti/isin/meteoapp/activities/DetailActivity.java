@@ -3,8 +3,8 @@ package ch.supsi.dti.isin.meteoapp.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -28,7 +28,15 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = new Intent(packageContext, DetailActivity.class);
 
         //search location by coordinates and set location id
+
         intent.putExtra(EXTRA_LOCATION_ID, new UUID(0,0));
+        //example we have to find location and send info of weather
+        AlertDialog alertDialog = new AlertDialog.Builder(packageContext).create();
+        alertDialog.setTitle("Location not found");
+        alertDialog.setMessage("The location you are looking for is not available \n"+"Latitude: "+latitude+"\n"+"Longitude: "+longitude);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                (dialog, which) -> dialog.dismiss());
+        alertDialog.show();
         return intent;
     }
 
@@ -50,7 +58,7 @@ public class DetailActivity extends AppCompatActivity {
 
         setContentView(R.layout.fragment_detail_location);
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.detail_container);
+        Fragment fragment = fm.findFragmentById(R.id.container);
         UUID locationId=new UUID(0,0);
         if (fragment == null) {
 
@@ -61,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
 
             fragment = new DetailLocationFragment().newInstance(locationId);
             fm.beginTransaction()
-                    .add(R.id.detail_container, fragment)
+                    .add(R.id.container, fragment)
                     .commit();
         }
     }

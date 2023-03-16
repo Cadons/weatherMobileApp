@@ -67,6 +67,31 @@ public class LocationsHolder {
         for (int i = 0; i < 10; i++) {
             Location location = new Location();
             location.setName("Location # " + i);
+            Weather weather = new Weather();
+            weather.setmTemperature(10 + i);
+            weather.setmHumidity(20 + i);
+            weather.setmPressure(30 + i);
+            weather.setmTempMin(40 + i);
+            weather.setmTempMax(50 + i);
+            weather.setmWindSpeed(60 + i);
+            weather.setmWindDeg(70 + i);
+            weather.setmClouds(80 + i);
+            weather.setmRain(90 + i);
+            weather.setmSnow(100 + i);
+            weather.setmWeatherDescription("Weather description " + i);
+            if(i%2==0)
+                weather.setmWeatherType(WeatherType.CLOUDY);
+            else if (i%3==0)
+                weather.setmWeatherType(WeatherType.RAINY);
+            else if (i%5==0)
+                weather.setmWeatherType(WeatherType.SNOWY);
+            else if (i%7==0)
+                weather.setmWeatherType(WeatherType.STORMY);
+            else if (i%11==0)
+                weather.setmWeatherType(WeatherType.SUNNY_CLOUDY);
+            else
+                weather.setmWeatherType(WeatherType.SUNNY);
+            location.setmWeather(weather);
             //mLocations.add(location);
             this.addLocation(location);
         }

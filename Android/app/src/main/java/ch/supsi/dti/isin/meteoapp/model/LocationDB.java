@@ -21,6 +21,9 @@ public class LocationDB {
         for (int i = 0; i < 100; i++) {
             Location location = new Location();
             location.setName("Entry # " + i);
+            //create fake weather data
+
+
             mLocations.add(location);
         }
     }
