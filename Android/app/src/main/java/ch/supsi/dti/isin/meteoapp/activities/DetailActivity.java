@@ -1,18 +1,30 @@
 package ch.supsi.dti.isin.meteoapp.activities;
 
+import static com.google.android.gms.location.LocationRequest.create;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.UUID;
 
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.DetailLocationFragment;
+import ch.supsi.dti.isin.meteoapp.http.OpenWeatherAPIService;
+import ch.supsi.dti.isin.meteoapp.model.Location;
+import ch.supsi.dti.isin.meteoapp.model.Weather;
+import retrofit2.Call;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String EXTRA_LOCATION_ID = "ch.supsi.dti.isin.meteoapp.location_id";
@@ -31,15 +43,35 @@ public class DetailActivity extends AppCompatActivity {
 
         intent.putExtra(EXTRA_LOCATION_ID, new UUID(0,0));
         //example we have to find location and send info of weather
-        AlertDialog alertDialog = new AlertDialog.Builder(packageContext).create();
-        alertDialog.setTitle("Location not found");
-        alertDialog.setMessage("The location you are looking for is not available \n"+"Latitude: "+latitude+"\n"+"Longitude: "+longitude);
+        try {
+            getLocationFromGPS(packageContext,latitude,longitude);
+
+        }
+        catch (IOException e){
+            Toast.makeText(packageContext, "Error", Toast.LENGTH_SHORT).show();
+        }
+        return intent;
+    }
+    private static void getLocationFromGPS(Context context,double lat, double lon) throws IOException {
+       if(lat==0&&lon==0) {
+           Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
+              return;
+       }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.openweathermap.org/")
+                .build();
+        //create interface
+        OpenWeatherAPIService service = retrofit.create(OpenWeatherAPIService.class);
+        Call<JSONObject> weather = service.getWeatherByCoordinates(lat, lon,"8ee77de7c0d74ad71c1aa7e069710ff7");
+       Response<JSONObject> result= weather.execute();
+        //alert dialog with json
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Location");
+        alertDialog.setMessage(result.body().toString());
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                 (dialog, which) -> dialog.dismiss());
         alertDialog.show();
-        return intent;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +82,7 @@ public class DetailActivity extends AppCompatActivity {
 /*
         JSONObject json = new JSONObject();
         String city=savedInstanceState.getString(EXTRA_LOCATION_ID);
-        String url = "http://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=8ee77de7c0d74ad71c1aa7e069710ff7";
+        String url = "";
 */
 
         //do request and get json

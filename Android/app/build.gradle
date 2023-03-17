@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
     defaultConfig {
         applicationId "ch.supsi.dti.isin.meteoapp"
         minSdkVersion 19
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,9 +29,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'io.nlopez.smartlocation:library:3.3.3'
-    implementation 'androidx.room:room-runtime:2.4.1'
-    annotationProcessor 'androidx.room:room-compiler:2.4.1'
-
+    implementation 'androidx.room:room-runtime:2.5.0'
+    annotationProcessor 'androidx.room:room-compiler:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
 }
 
