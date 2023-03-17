@@ -18,7 +18,6 @@ import ch.supsi.dti.isin.meteoapp.model.Location;
 
 public class DetailLocationFragment extends Fragment {
     private static final String ARG_LOCATION_ID = "location_id";
-
     private Location mLocation;
     private TextView cityName;
     private TextView temperature;
@@ -27,7 +26,6 @@ public class DetailLocationFragment extends Fragment {
     public static DetailLocationFragment newInstance(UUID locationId) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_LOCATION_ID, locationId);
-
         DetailLocationFragment fragment = new DetailLocationFragment();
         fragment.setArguments(args);
         return fragment;
@@ -56,27 +54,7 @@ public class DetailLocationFragment extends Fragment {
         description.setText(mLocation.getmWeather().getmWeatherDescription());
 
         weatherIcon = v.findViewById(R.id.weatherIcon);
-        switch (mLocation.getmWeather().getmWeatherType()) {
-            case SUNNY_CLOUDY:
-                weatherIcon.setImageResource(R.drawable.sun_behind_cloud);
-                break;
-            case SUNNY:
-                weatherIcon.setImageResource(R.drawable.sun_behind_cloud);
-                break;
-            case CLOUDY:
-                weatherIcon.setImageResource(R.drawable.cloud);
-                break;
-            case RAINY:
-                weatherIcon.setImageResource(R.drawable.sun_behind_rain_cloud);
-                break;
-            case SNOWY:
-                weatherIcon.setImageResource(R.drawable.sun_behind_rain_cloud);
-                break;
-
-
-        }
-
-
+        weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getmWeatherType().getIcon(), null, getActivity().getPackageName()));
 
         return v;
     }

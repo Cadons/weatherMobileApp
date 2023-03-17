@@ -80,17 +80,17 @@ public class LocationsHolder {
             weather.setmSnow(100 + i);
             weather.setmWeatherDescription("Weather description " + i);
             if(i%2==0)
-                weather.setmWeatherType(WeatherType.CLOUDY);
+                weather.setmWeatherType(WeatherType.BROKEN_CLOUDS);
             else if (i%3==0)
-                weather.setmWeatherType(WeatherType.RAINY);
+                weather.setmWeatherType(WeatherType.FEW_CLOUDS);
             else if (i%5==0)
-                weather.setmWeatherType(WeatherType.SNOWY);
+                weather.setmWeatherType(WeatherType.CLEAR_SKY);
             else if (i%7==0)
-                weather.setmWeatherType(WeatherType.STORMY);
+                weather.setmWeatherType(WeatherType.THUNDERSTORM );
             else if (i%11==0)
-                weather.setmWeatherType(WeatherType.SUNNY_CLOUDY);
+                weather.setmWeatherType(WeatherType.SNOW);
             else
-                weather.setmWeatherType(WeatherType.SUNNY);
+                weather.setmWeatherType(WeatherType.MIST);
             location.setmWeather(weather);
             //mLocations.add(location);
             this.addLocation(location);

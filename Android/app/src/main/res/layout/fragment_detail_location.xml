@@ -79,5 +79,5 @@
         app:layout_constraintHorizontal_bias="0.084"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:srcCompat="@drawable/sun_behind_rain_cloud" />
+        tools:srcCompat="@drawable/rainy_sunny" />
 </androidx.constraintlayout.widget.ConstraintLayout>
