@@ -1,43 +1,25 @@
 package ch.supsi.dti.isin.meteoapp.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import android.content.Context;
 
-public class LocationDB {
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
-    private static LocationDB mLocationsDb;
-    private List<Location> mLocations;
+@Database(entities = {Location.class}, version = 1, exportSchema = false)
+public abstract class LocationDB extends RoomDatabase {
 
-    public static LocationDB get() {
-        if (mLocationsDb == null)
-            mLocationsDb = new LocationDB();
+    private static LocationDB instance;
 
-        return mLocationsDb;
-    }
+    public abstract LocationDao locationDao();
 
-    private void LocationsDB() {
-        mLocations = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            Location location = new Location();
-            location.setName("Entry # " + i);
-            //create fake weather data
-
-
-            mLocations.add(location);
+    public static synchronized LocationDB getInstance(Context context) {
+        if (instance == null) {
+            instance = Room.databaseBuilder(context.getApplicationContext(),
+                            LocationDB.class, "location_db")
+                    .fallbackToDestructiveMigration()
+                    .build();
         }
-    }
-
-    public List<Location> getEntries() {
-        return mLocations;
-    }
-
-    public Location getEntry(UUID id) {
-        for (Location entry : mLocations) {
-            if (entry.getId().equals(id))
-                return entry;
-        }
-
-        return null;
+        return instance;
     }
 }

@@ -2,9 +2,23 @@ package ch.supsi.dti.isin.meteoapp.model;
 
 import java.util.UUID;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "location")
 public class Location {
+    @PrimaryKey()
+    @ColumnInfo(name = "id")
+    @NonNull
     private UUID Id;
+
+    @ColumnInfo(name = "name")
     private String mName;
+
+    @Ignore
     private Weather mWeather;
 
     public UUID getId() {
