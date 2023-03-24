@@ -69,6 +69,16 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_single_fragment);
         geolocate();
 
+        Button geolocateButton = findViewById(R.id.geolocate_btn);
+        geolocateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //open detail activity with coordinates
+                Intent intent = DetailActivity.newIntent(MainActivity.this, coordinates.getLatitude(), coordinates.getLongitude());
+                startActivity(intent);
+            }
+        });
+
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if (fragment == null) {
@@ -76,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
-
         }
     }
+
 
 
     private void geolocate() {

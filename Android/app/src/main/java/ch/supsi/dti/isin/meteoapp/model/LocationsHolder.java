@@ -91,7 +91,7 @@ public class LocationsHolder {
                 weather.setmWeatherType(WeatherType.SNOW);
             else
                 weather.setmWeatherType(WeatherType.MIST);
-            location.setmWeather(weather);
+            //location.setmWeather(weather);
             //mLocations.add(location);
             this.addLocation(location);
         }

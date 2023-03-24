@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +53,14 @@ public class DetailLocationFragment extends Fragment {
         double latitude = (double) getArguments().getSerializable(GPS_LATITUDE);
         double longitude = (double) getArguments().getSerializable(GPS_LONGINTUDE);
 
+        mLocation = new Location();
+        try {
+            getLocationFromGPS(latitude, longitude);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
     private void getLocationFromGPS(double lat, double lon) throws IOException {
         if (lat == 0 && lon == 0) {
             //Toast.makeText(this, "No location detected", Toast.LENGTH_SHORT).show();
@@ -98,27 +106,40 @@ public class DetailLocationFragment extends Fragment {
         });
 
     }
+    private Handler handler = new Handler();
+
+    private Runnable updateUIRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
+                cityName.setText(mLocation.getName());
+                temperature.setText(String.valueOf(mLocation.getmWeather().getMain().getTemp()));
+                description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
+                weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+            } else {
+                handler.postDelayed(this, 500);
+            }
+        }
+    };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_detail_location, container, false);
 
-        if(mLocation == null)
+        if (mLocation == null) {
             return v;
+        }
 
         cityName = v.findViewById(R.id.cityNameTextBox);
-        cityName.setText(mLocation.getName());
         temperature = v.findViewById(R.id.temperatureText);
-
-        temperature.setText(String.valueOf(mLocation.getmWeather().getMain().getTemp()));
-
         description = v.findViewById(R.id.weatherDescription);
-        description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
-
         weatherIcon = v.findViewById(R.id.weatherIcon);
-        weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+
+        handler.post(updateUIRunnable);
 
         return v;
     }
+
 
 
 }
