@@ -8,6 +8,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import ch.supsi.dti.isin.meteoapp.http.WeatherResponse;
+
 @Entity(tableName = "location")
 public class Location {
     @PrimaryKey()
@@ -19,7 +21,7 @@ public class Location {
     private String mName;
 
     @Ignore
-    private Weather mWeather;
+    private WeatherResponse mWeather;
 
     public UUID getId() {
         return Id;
@@ -37,11 +39,11 @@ public class Location {
         mName = name;
     }
 
-    public Weather getmWeather() {
+    public WeatherResponse getmWeather() {
         return mWeather;
     }
 
-    public void setmWeather(Weather mWeather) {
+    public void setmWeather(WeatherResponse mWeather) {
         this.mWeather = mWeather;
     }
 

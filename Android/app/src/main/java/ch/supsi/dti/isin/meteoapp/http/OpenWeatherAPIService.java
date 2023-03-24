@@ -14,13 +14,13 @@ public interface OpenWeatherAPIService {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @GET("data/2.5/weather?q=\"+city+\"&appid=\"+api_key+\"")
-    Call<JSONObject> getWeatherByCity(@Query("city") String city, @Query("appid") String api_key);
+    @GET("weather")
+    Call<WeatherResponse> getWeatherByCity(@Query("q") String city, @Query("appid") String api_key);
     @Headers({
             "Accept: application/json",
             "Content-Type: application/json"
     })
-    @GET("data/2.5/weather?lat=\"+lat+\"&lon=\"+lon+\"&appid=\"+api_key+\"")
-    Call<JSONObject> getWeatherByCoordinates(@Query("lat") double lat, @Query("lon") double lon, @Query("appid") String api_key);
+    @GET("weather")
+    Call<WeatherResponse> getWeatherByCoordinates(@Query("lat") double lat, @Query("lon") double lon, @Query("appid") String api_key);
 
 }
