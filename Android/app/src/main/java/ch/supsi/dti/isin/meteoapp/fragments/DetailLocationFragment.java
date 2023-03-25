@@ -1,5 +1,6 @@
 package ch.supsi.dti.isin.meteoapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -21,7 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.http.OpenWeatherAPIService;
 import ch.supsi.dti.isin.meteoapp.http.WeatherResponse;
-import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 import ch.supsi.dti.isin.meteoapp.model.Location;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +38,7 @@ public class DetailLocationFragment extends Fragment {
     private TextView temperature;
     private TextView description;
     private ImageView weatherIcon;
+
     public static DetailLocationFragment newInstance(double latitude, double longitude) {
         Bundle args = new Bundle();
         args.putSerializable(GPS_LATITUDE, latitude);
@@ -61,6 +62,12 @@ public class DetailLocationFragment extends Fragment {
         }
     }
 
+    @SuppressLint("DefaultLocale")
+    private String kelvinToCelsius(double kelvin) {
+        return String.format("%.1f", kelvin - 273.15);
+    }
+
+
     private void getLocationFromGPS(double lat, double lon) throws IOException {
         if (lat == 0 && lon == 0) {
             //Toast.makeText(this, "No location detected", Toast.LENGTH_SHORT).show();
@@ -68,7 +75,7 @@ public class DetailLocationFragment extends Fragment {
         }
         AtomicReference<String> city = new AtomicReference<>("");
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.openweathermap.org/data/2.5/")
+                .baseUrl("https://api.openweathermap.org/data/2.5/") // call to openweather api
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         //create interface
@@ -87,16 +94,23 @@ public class DetailLocationFragment extends Fragment {
                     weatherResponse.setReady(true);
                     mLocation.setmWeather(weatherResponse);
                     mLocation.setName(weatherResponse.getName());
-
                     //alert dialog with json
-
+                    updateUI(); // Aggiungi questa riga
                 } else {
-
-
                     Log.e("Error", response.errorBody().toString());
                 }
-
             }
+
+            @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+            private void updateUI() {
+                if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
+                    cityName.setText(mLocation.getName());
+                    temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
+                    description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
+                    weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+                }
+            }
+
 
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
@@ -106,14 +120,17 @@ public class DetailLocationFragment extends Fragment {
         });
 
     }
+
+
     private Handler handler = new Handler();
 
     private Runnable updateUIRunnable = new Runnable() {
+        @SuppressLint({"DiscouragedApi", "SetTextI18n"})
         @Override
         public void run() {
             if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
                 cityName.setText(mLocation.getName());
-                temperature.setText(String.valueOf(mLocation.getmWeather().getMain().getTemp()));
+                temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
                 description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
                 weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
             } else {
@@ -134,13 +151,7 @@ public class DetailLocationFragment extends Fragment {
         temperature = v.findViewById(R.id.temperatureText);
         description = v.findViewById(R.id.weatherDescription);
         weatherIcon = v.findViewById(R.id.weatherIcon);
-
-        handler.post(updateUIRunnable);
-
         return v;
     }
-
-
-
 }
 

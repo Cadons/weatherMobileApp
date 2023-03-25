@@ -9,91 +9,65 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import ch.supsi.dti.isin.meteoapp.http.OpenWeatherAPIService;
+import ch.supsi.dti.isin.meteoapp.http.WeatherResponse;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.config.LocationAccuracy;
 import io.nlopez.smartlocation.location.config.LocationParams;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LocationsHolder {
 
     private static LocationsHolder sLocationsHolder;
     private List<Location> mLocations;
 
+    private LocationsHolder(Context context) {
+        mLocations = new ArrayList<>();
+        createRealLocations();
+    }
+
     public static LocationsHolder get(Context context) {
         if (sLocationsHolder == null)
-            sLocationsHolder = new LocationsHolder(context);
+            sLocationsHolder = new LocationsHolder(context)
+                    ;
 
         return sLocationsHolder;
     }
 
-//    private LocationsHolder(Context context) {
-//        mLocations = new ArrayList<>();
-//
-//        Location location1 = new Location();
-//        location1.setName("Lugano");
-//
-//
-//        Location location2 = new Location();
-//        location2.setName("Locarno");
-//
-//
-//        Location location3 = new Location();
-//        location3.setName("Bellinzona");
-//
-//
-//        Location newLocation = new Location();
-//        newLocation.setName("Praga");
-//
-//        Location newLocation2 = new Location();
-//        newLocation2.setName("Lugano");
-//
-//        Location newLocation3 = new Location();
-//        newLocation3.setName("Locarno");
-//
-//        Location newLocation4 = new Location();
-//        newLocation4.setName("Bellinzona");
-//
-//        this.addLocation(location1);
-//        this.addLocation(location2);
-//        this.addLocation(location3);
-//        this.addLocation(newLocation);
-//        this.addLocation(newLocation2);
-//        this.addLocation(newLocation3);
-//        this.addLocation(newLocation4);
-//    }
+    private void createRealLocations() {
+        String[] cityNames = {
+                "London", "Milan", "New York", "Paris", "Tokyo", "Sydney", "Moscow", "Mumbai", "Rio de Janeiro", "Toronto"
+        };
 
-    private LocationsHolder(Context context) {
-        mLocations = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        double[][] cityCoordinates = {
+                {51.5074, -0.1278},
+                {45.4642, 9.1900},
+                {40.7128, -74.0060},
+                {48.8566, 2.3522},
+                {35.6895, 139.6917},
+                {-33.8688, 151.2093},
+                {55.7558, 37.6173},
+                {19.0760, 72.8777},
+                {-22.9068, -43.1729},
+                {43.6532, -79.3832}
+        };
+
+        for (int i = 0; i < cityNames.length; i++) {
             Location location = new Location();
-            location.setName("Location # " + i);
-            Weather weather = new Weather();
-            weather.setmTemperature(10 + i);
-            weather.setmHumidity(20 + i);
-            weather.setmPressure(30 + i);
-            weather.setmTempMin(40 + i);
-            weather.setmTempMax(50 + i);
-            weather.setmWindSpeed(60 + i);
-            weather.setmWindDeg(70 + i);
-            weather.setmClouds(80 + i);
-            weather.setmRain(90 + i);
-            weather.setmSnow(100 + i);
-            weather.setmWeatherDescription("Weather description " + i);
-            if(i%2==0)
-                weather.setmWeatherType(WeatherType.BROKEN_CLOUDS);
-            else if (i%3==0)
-                weather.setmWeatherType(WeatherType.FEW_CLOUDS);
-            else if (i%5==0)
-                weather.setmWeatherType(WeatherType.CLEAR_SKY);
-            else if (i%7==0)
-                weather.setmWeatherType(WeatherType.THUNDERSTORM );
-            else if (i%11==0)
-                weather.setmWeatherType(WeatherType.SNOW);
-            else
-                weather.setmWeatherType(WeatherType.MIST);
-            //location.setmWeather(weather);
-            //mLocations.add(location);
-            this.addLocation(location);
+            WeatherResponse weather = new WeatherResponse();
+            WeatherResponse.Coord coord = new WeatherResponse.Coord();
+            coord.setLat(cityCoordinates[i][0]);
+            coord.setLon(cityCoordinates[i][1]);
+            weather.setCoord(coord);
+
+            location.setName(cityNames[i]);
+            location.setmWeather(weather);
+            mLocations.add(location);
         }
     }
 
@@ -121,6 +95,7 @@ public class LocationsHolder {
         return gpsCoordinates;
     }
 
+
     public Location getLocation(UUID id) {
         for (Location location : mLocations) {
             if (location.getId().equals(id))
@@ -132,5 +107,9 @@ public class LocationsHolder {
 
     public void addLocation(Location location) {
         mLocations.add(location);
+    }
+
+    public void removeLocation(Location newLocation) {
+        mLocations.remove(newLocation);
     }
 }
