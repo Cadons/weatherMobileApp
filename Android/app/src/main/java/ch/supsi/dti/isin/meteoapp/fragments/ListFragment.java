@@ -124,6 +124,7 @@ public class ListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add:
+
                 // create a new AlertDialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                 builder.setTitle("Add a location");
@@ -143,7 +144,9 @@ public class ListFragment extends Fragment {
                         // Create a new location and add it to the list
                         Location newLocation = new Location();
                         newLocation.setName(cityName);
-                        LocationsHolder.get(getActivity()).addLocation(newLocation);
+                        //LocationsHolder.get(getActivity()).addLocation(newLocation);
+                        // add location to database
+                        LocationsHolder.get(getActivity()).addLocationDB(newLocation);
 
                         // Fetch weather data for the new location
                         getWeatherByCityName(cityName, new OnWeatherResponseListener() {

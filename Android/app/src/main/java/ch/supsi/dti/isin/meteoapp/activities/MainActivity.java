@@ -17,11 +17,14 @@ import ch.supsi.dti.isin.meteoapp.R;
 import ch.supsi.dti.isin.meteoapp.fragments.ListFragment;
 import ch.supsi.dti.isin.meteoapp.model.GPSCoordinates;
 import ch.supsi.dti.isin.meteoapp.model.Location;
+import ch.supsi.dti.isin.meteoapp.model.LocationDB;
 import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 public class MainActivity extends AppCompatActivity {
     private int REQUEST_CODE;
     private GPSCoordinates coordinates;
+
+    private LocationDB db;
     private Bundle savedInstanceStateGlobal;
 
     @Override
@@ -29,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         savedInstanceStateGlobal = savedInstanceState;
         requestPermissions();
+
+        //create database
+        //db = LocationDB.getInstance(this);
+
 
         Button geolocateButton = findViewById(R.id.geolocate_btn);
         geolocateButton.setOnClickListener(new View.OnClickListener() {
@@ -56,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED&& grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // ho ottenuto i permessi
                     open();
                 }
@@ -88,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
     }
-
 
 
     private void geolocate() {

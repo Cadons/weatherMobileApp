@@ -3,11 +3,16 @@ package ch.supsi.dti.isin.meteoapp.model;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import ch.supsi.dti.isin.meteoapp.http.OpenWeatherAPIService;
 import ch.supsi.dti.isin.meteoapp.http.WeatherResponse;
@@ -26,10 +31,79 @@ public class LocationsHolder {
     private static LocationsHolder sLocationsHolder;
     private List<Location> mLocations;
 
+    private LocationDB db;
+
+    private Executor mExecutor = Executors.newSingleThreadExecutor();
+
+
     private LocationsHolder(Context context) {
         mLocations = new ArrayList<>();
         createRealLocations();
     }
+
+/*    private LocationsHolder(Context context) {
+        mLocationDao = LocationDB.getInstance(context).locationDao();
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<Location> locations = mLocationDao.getLocations();
+                if (locations.isEmpty()) {
+                    createRealLocations();
+                } else {
+                    mLocations = locations;
+                }
+            }
+        });
+    }*/
+
+    public Location getLocation(UUID id) {
+        for (Location location : mLocations) {
+            if (location.getId().equals(id))
+                return location;
+        }
+
+        return null;
+    }
+
+    //add location to database
+    public void addLocationDB(Location location) {
+        db.locationDao().insertLocation(location);
+    }
+
+
+/*
+
+    public List<Location> getLocations() {
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocations = mLocationDao.getLocations();
+            }
+        });
+        return mLocations;
+    }
+
+    public void addLocation(Location location) {
+        mLocations.add(location);
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocationDao.insertLocation(location);
+            }
+        });
+    }
+
+    public void removeLocation(Location location) {
+        mLocations.remove(location);
+        mExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                mLocationDao.deleteLocation(location);
+            }
+        });
+    }
+*/
+
 
     public static LocationsHolder get(Context context) {
         if (sLocationsHolder == null)
@@ -38,6 +112,7 @@ public class LocationsHolder {
 
         return sLocationsHolder;
     }
+
 
     private void createRealLocations() {
         String[] cityNames = {
@@ -67,13 +142,22 @@ public class LocationsHolder {
 
             location.setName(cityNames[i]);
             location.setmWeather(weather);
+            //insert location in database
+            db.locationDao().insertLocation(location);
+
             mLocations.add(location);
         }
+
+/*        for (Location location : mLocations) {
+            mExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    mLocationDao.insertLocation(location);
+                }
+            });
+        }*/
     }
 
-    public List<Location> getLocations() {
-        return mLocations;
-    }
 
     public static GPSCoordinates getLocalLocation(Context context, final Location location) {
         GPSCoordinates gpsCoordinates = new GPSCoordinates(0, 0);
@@ -96,13 +180,8 @@ public class LocationsHolder {
     }
 
 
-    public Location getLocation(UUID id) {
-        for (Location location : mLocations) {
-            if (location.getId().equals(id))
-                return location;
-        }
-
-        return null;
+    public List<Location> getLocations() {
+        return mLocations;
     }
 
     public void addLocation(Location location) {
