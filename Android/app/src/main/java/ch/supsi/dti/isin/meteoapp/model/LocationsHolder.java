@@ -36,25 +36,27 @@ public class LocationsHolder {
     private Executor mExecutor = Executors.newSingleThreadExecutor();
 
 
+/*    private LocationsHolder(Context context) {
+        mLocations = new ArrayList<>();
+
+        db = LocationDB.getInstance(context);
+
+        createRealLocations();
+    }*/
+
     private LocationsHolder(Context context) {
         mLocations = new ArrayList<>();
-        createRealLocations();
-    }
 
-/*    private LocationsHolder(Context context) {
-        mLocationDao = LocationDB.getInstance(context).locationDao();
+        db = LocationDB.getInstance(context);
+
         mExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                List<Location> locations = mLocationDao.getLocations();
-                if (locations.isEmpty()) {
-                    createRealLocations();
-                } else {
-                    mLocations = locations;
-                }
+                createRealLocations();
             }
         });
-    }*/
+    }
+
 
     public Location getLocation(UUID id) {
         for (Location location : mLocations) {
@@ -66,43 +68,18 @@ public class LocationsHolder {
     }
 
     //add location to database
-    public void addLocationDB(Location location) {
+/*    public void addLocationDB(Location location) {
         db.locationDao().insertLocation(location);
-    }
+    }*/
 
-
-/*
-
-    public List<Location> getLocations() {
+    public void addLocationDB(Location location) {
         mExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                mLocations = mLocationDao.getLocations();
-            }
-        });
-        return mLocations;
-    }
-
-    public void addLocation(Location location) {
-        mLocations.add(location);
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocationDao.insertLocation(location);
+                db.locationDao().insertLocation(location);
             }
         });
     }
-
-    public void removeLocation(Location location) {
-        mLocations.remove(location);
-        mExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                mLocationDao.deleteLocation(location);
-            }
-        });
-    }
-*/
 
 
     public static LocationsHolder get(Context context) {
@@ -142,20 +119,16 @@ public class LocationsHolder {
 
             location.setName(cityNames[i]);
             location.setmWeather(weather);
-            //insert location in database
-            db.locationDao().insertLocation(location);
-
-            mLocations.add(location);
-        }
-
-/*        for (Location location : mLocations) {
             mExecutor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    mLocationDao.insertLocation(location);
+                    // Insert location in database
+                    db.locationDao().insertLocation(location);
                 }
             });
-        }*/
+
+            mLocations.add(location);
+        }
     }
 
 

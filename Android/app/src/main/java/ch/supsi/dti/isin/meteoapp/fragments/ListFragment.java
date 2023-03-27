@@ -139,40 +139,46 @@ public class ListFragment extends Fragment {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String cityName = input.getText().toString();
+                        new Thread(() -> {
+                            String cityName = input.getText().toString();
 
-                        // Create a new location and add it to the list
-                        Location newLocation = new Location();
-                        newLocation.setName(cityName);
-                        //LocationsHolder.get(getActivity()).addLocation(newLocation);
-                        // add location to database
-                        LocationsHolder.get(getActivity()).addLocationDB(newLocation);
+                            // Create a new location and add it to the list
+                            Location newLocation = new Location();
+                            newLocation.setName(cityName);
+                            // Add location to database
+                            LocationsHolder.get(getActivity()).addLocationDB(newLocation);
 
-                        // Fetch weather data for the new location
-                        getWeatherByCityName(cityName, new OnWeatherResponseListener() {
-                            @Override
-                            public void onResponse(WeatherResponse weatherResponse) {
-                                if (weatherResponse != null) {
-                                    newLocation.setmWeather(weatherResponse);
-                                    // Notify the adapter of the addition
-                                    mAdapter.notifyDataSetChanged();
-                                } else {
-                                    // Remove the added location if the weather data is not available
-                                    LocationsHolder.get(getActivity()).removeLocation(newLocation);
-                                    showErrorToast("Unable to fetch weather data for " + cityName);
+                            // Fetch weather data for the new location
+                            getWeatherByCityName(cityName, new OnWeatherResponseListener() {
+                                @Override
+                                public void onResponse(WeatherResponse weatherResponse) {
+                                    if (weatherResponse != null) {
+                                        newLocation.setmWeather(weatherResponse);
+
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // Notify the adapter of the addition
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                    } else {
+                                        // Remove the added location if the weather data is not available
+                                        LocationsHolder.get(getActivity()).removeLocation(newLocation);
+                                        showErrorToast("Unable to fetch weather data for " + cityName);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onError() {
-                                // Remove the added location if an error occurs
-                                LocationsHolder.get(getActivity()).removeLocation(newLocation);
-                                showErrorToast("Error: Unable to fetch weather data for " + cityName);
-                            }
-                        });
+                                @Override
+                                public void onError() {
+                                    // Remove the added location if an error occurs
+                                    LocationsHolder.get(getActivity()).removeLocation(newLocation);
+                                    showErrorToast("Error: Unable to fetch weather data for " + cityName);
+                                }
+                            });
+                        }).start();
                     }
                 });
-
 
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -187,6 +193,7 @@ public class ListFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     private void showErrorToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
