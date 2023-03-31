@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         requestPermissions();
 
         //create database
-        //db = LocationDB.getInstance(this);
+        db = LocationDB.getInstance(this);
 
 
         Button geolocateButton = findViewById(R.id.geolocate_btn);

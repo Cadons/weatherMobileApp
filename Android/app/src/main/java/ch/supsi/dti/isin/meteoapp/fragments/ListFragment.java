@@ -122,6 +122,7 @@ public class ListFragment extends Fragment {
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful()) {
                     WeatherResponse weatherResponse = response.body();
+
                     listener.onResponse(weatherResponse);
                 } else {
                     listener.onError();
@@ -177,7 +178,7 @@ public class ListFragment extends Fragment {
                                 public void onResponse(WeatherResponse weatherResponse) {
                                     if (weatherResponse != null) {
                                         newLocation.setmWeather(weatherResponse);
-
+                                        updateUI();
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {

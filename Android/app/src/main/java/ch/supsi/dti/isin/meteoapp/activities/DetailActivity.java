@@ -17,6 +17,7 @@ import ch.supsi.dti.isin.meteoapp.model.LocationsHolder;
 
 
 public class DetailActivity extends AppCompatActivity {
+
     private static final String EXTRA_LOCATION_ID = "ch.supsi.dti.isin.meteoapp.location_id";
     private static final String EXTRA_GPS_LATITUDE = "ch.supsi.dti.isin.meteoapp.gps_latitude";
     private static final String EXTRA_GPS_LONGITUDE = "ch.supsi.dti.isin.meteoapp.gps_longitude";
@@ -59,8 +60,13 @@ public class DetailActivity extends AppCompatActivity {
                             .commit();
                 }
             } else {
-                // Handle the case when location or location's weather is null
-                // You might want to show an error message or return to the previous activity
+                if(fragment == null) {
+                    fragment = DetailLocationFragment.newInstance(location.getName());
+                    fm.beginTransaction()
+                            .add(R.id.container, fragment)
+                            .commit();
+                }
+
             }
         } else {
             double latitude = getIntent().getDoubleExtra(EXTRA_GPS_LATITUDE, 0);
