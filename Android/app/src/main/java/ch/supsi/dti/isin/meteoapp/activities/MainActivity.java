@@ -101,6 +101,4 @@ public class MainActivity extends AppCompatActivity {
         Location location = new Location();
         coordinates = LocationsHolder.getLocalLocation(this, location);
     }
-
-
 }

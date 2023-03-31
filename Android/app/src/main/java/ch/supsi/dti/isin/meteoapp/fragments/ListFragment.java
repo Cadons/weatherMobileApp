@@ -48,6 +48,7 @@ public class ListFragment extends Fragment {
     }
 
 
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
@@ -58,14 +59,35 @@ public class ListFragment extends Fragment {
         mAdapter = new LocationAdapter(locations);
         mLocationRecyclerView.setAdapter(mAdapter);
 
+        updateUI();
+
+        return view;
+    }
+*/
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        mLocationRecyclerView = view.findViewById(R.id.recycler_view);
+        mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        LocationsHolder locationsHolder = LocationsHolder.get(getActivity());
+        locationsHolder.addLocationsLoadedCallback(new LocationsHolder.LocationsLoadedCallback() {
+            @Override
+            public void onLocationsLoaded(List<Location> locations) {
+                mAdapter = new LocationAdapter(locations);
+                mLocationRecyclerView.setAdapter(mAdapter);
+                updateUI();
+            }
+        });
+
         return view;
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
-    private void updateUI() {
-        LocationsHolder locationsHolder = LocationsHolder.get(getActivity());
-        List<Location> locations = locationsHolder.getLocations();
+    public void updateUI() {
+        List<Location> locations = LocationsHolder.get(getActivity()).getLocations();
 
         if (mAdapter == null) {
             mAdapter = new LocationAdapter(locations);
@@ -75,6 +97,7 @@ public class ListFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
     }
+
 
     // Menu
 
