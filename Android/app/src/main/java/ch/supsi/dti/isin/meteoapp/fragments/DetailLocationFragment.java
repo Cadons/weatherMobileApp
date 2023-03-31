@@ -94,6 +94,7 @@ public class DetailLocationFragment extends Fragment {
                     weatherResponse.setReady(true);
                     mLocation.setmWeather(weatherResponse);
                     mLocation.setName(weatherResponse.getName());
+                    Log.i("Icon", weatherResponse.getWeather().get(0).getIcon());
                     //alert dialog with json
                     updateUI(); // Aggiungi questa riga
                 } else {
@@ -107,7 +108,7 @@ public class DetailLocationFragment extends Fragment {
                     cityName.setText(mLocation.getName());
                     temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
                     description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
-                    weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+                    weatherIcon.setImageResource(getResources().getIdentifier("drawable/i" + mLocation.getmWeather().getWeather().get(0).getIcon(), null, getActivity().getPackageName()));
                 }
             }
 
@@ -132,7 +133,8 @@ public class DetailLocationFragment extends Fragment {
                 cityName.setText(mLocation.getName());
                 temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
                 description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
-                weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+                weatherIcon.setImageResource(getResources().getIdentifier("drawable/i" + mLocation.getmWeather().getWeather().get(0).getIcon(), null, getActivity().getPackageName()));
+
             } else {
                 handler.postDelayed(this, 500);
             }
