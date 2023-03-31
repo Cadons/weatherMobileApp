@@ -32,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DetailLocationFragment extends Fragment {
     private static final String GPS_LATITUDE = "latitude";
     private static final String GPS_LONGINTUDE = "longitude";
+    private static final String CITY_NAME = "city_name";
     private Location mLocation;
 
     private TextView cityName;
@@ -47,19 +48,43 @@ public class DetailLocationFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    public static DetailLocationFragment newInstance(String cityName) {
+        Bundle args = new Bundle();
+        args.putSerializable(CITY_NAME, cityName);
+
+        DetailLocationFragment fragment = new DetailLocationFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        double latitude = (double) getArguments().getSerializable(GPS_LATITUDE);
-        double longitude = (double) getArguments().getSerializable(GPS_LONGINTUDE);
 
-        mLocation = new Location();
-        try {
-            getLocationFromGPS(latitude, longitude);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (getArguments().containsKey(GPS_LATITUDE) && getArguments().containsKey(GPS_LONGINTUDE)) {
+            double latitude = (double) getArguments().getSerializable(GPS_LATITUDE);
+            double longitude = (double) getArguments().getSerializable(GPS_LONGINTUDE);
+            mLocation = new Location();
+            try {
+                getLocationFromGPS(latitude, longitude);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else if (getArguments().containsKey(CITY_NAME)) {
+            String cityName = (String) getArguments().getSerializable(CITY_NAME);
+            mLocation = new Location();
+            try {
+                getLocationFromName(cityName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(getActivity(), "No location detected", Toast.LENGTH_SHORT).show();
+
         }
+
     }
 
     @SuppressLint("DefaultLocale")
@@ -122,6 +147,58 @@ public class DetailLocationFragment extends Fragment {
 
     }
 
+    private void getLocationFromName(String cityNameInput) throws IOException {
+        if (cityNameInput == null || cityNameInput.isEmpty()) {
+            return;
+        }
+        AtomicReference<String> city = new AtomicReference<>("");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.openweathermap.org/data/2.5/") // call to openweather api
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        //create interface
+        OpenWeatherAPIService service = retrofit.create(OpenWeatherAPIService.class);
+        Call<WeatherResponse> weatherRequest = service.getWeatherByCity(cityNameInput, "8ee77de7c0d74ad71c1aa7e069710ff7");
+        //async call
+        DetailLocationFragment context = this;
+        weatherRequest.enqueue(new Callback<WeatherResponse>() {
+            @Override
+            public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                Log.i("Response", response.toString());
+                if (response.isSuccessful()) {
+                    WeatherResponse weatherResponse = response.body();
+                    //do something with weatherResponse
+                    //log the response
+                    weatherResponse.setReady(true);
+                    mLocation.setmWeather(weatherResponse);
+                    mLocation.setName(cityNameInput);
+                    //alert dialog with json
+                    updateUI(); // Aggiungi questa riga
+                } else {
+                    Log.e("Error", response.errorBody().toString());
+                }
+            }
+
+            @SuppressLint({"DiscouragedApi", "SetTextI18n"})
+            private void updateUI() {
+                if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
+                    cityName.setText(mLocation.getName());
+                    temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
+                    description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
+                    weatherIcon.setImageResource(getResources().getIdentifier("drawable/" + mLocation.getmWeather().getWeather().get(0).getDescription(), null, getActivity().getPackageName()));
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<WeatherResponse> call, Throwable t) {
+                Log.e("Error", t.getMessage());
+
+            }
+        });
+
+    }
+
 
     private Handler handler = new Handler();
 
@@ -142,7 +219,8 @@ public class DetailLocationFragment extends Fragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_detail_location, container, false);
 
         if (mLocation == null) {

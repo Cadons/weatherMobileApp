@@ -48,6 +48,7 @@ public class ListFragment extends Fragment {
     }
 
 
+/*
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);
@@ -58,14 +59,35 @@ public class ListFragment extends Fragment {
         mAdapter = new LocationAdapter(locations);
         mLocationRecyclerView.setAdapter(mAdapter);
 
+        updateUI();
+
+        return view;
+    }
+*/
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
+        mLocationRecyclerView = view.findViewById(R.id.recycler_view);
+        mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        LocationsHolder locationsHolder = LocationsHolder.get(getActivity());
+        locationsHolder.addLocationsLoadedCallback(new LocationsHolder.LocationsLoadedCallback() {
+            @Override
+            public void onLocationsLoaded(List<Location> locations) {
+                mAdapter = new LocationAdapter(locations);
+                mLocationRecyclerView.setAdapter(mAdapter);
+                updateUI();
+            }
+        });
+
         return view;
     }
 
 
     @SuppressLint("NotifyDataSetChanged")
-    private void updateUI() {
-        LocationsHolder locationsHolder = LocationsHolder.get(getActivity());
-        List<Location> locations = locationsHolder.getLocations();
+    public void updateUI() {
+        List<Location> locations = LocationsHolder.get(getActivity()).getLocations();
 
         if (mAdapter == null) {
             mAdapter = new LocationAdapter(locations);
@@ -75,6 +97,7 @@ public class ListFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         }
     }
+
 
     // Menu
 
@@ -99,6 +122,7 @@ public class ListFragment extends Fragment {
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
                 if (response.isSuccessful()) {
                     WeatherResponse weatherResponse = response.body();
+
                     listener.onResponse(weatherResponse);
                 } else {
                     listener.onError();
@@ -124,6 +148,7 @@ public class ListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_add:
+
                 // create a new AlertDialog
                 AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
                 builder.setTitle("Add a location");
@@ -138,38 +163,46 @@ public class ListFragment extends Fragment {
                     @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String cityName = input.getText().toString();
+                        new Thread(() -> {
+                            String cityName = input.getText().toString();
 
-                        // Create a new location and add it to the list
-                        Location newLocation = new Location();
-                        newLocation.setName(cityName);
-                        LocationsHolder.get(getActivity()).addLocation(newLocation);
+                            // Create a new location and add it to the list
+                            Location newLocation = new Location();
+                            newLocation.setName(cityName);
+                            // Add location to database
+                            LocationsHolder.get(getActivity()).addLocationDB(newLocation);
 
-                        // Fetch weather data for the new location
-                        getWeatherByCityName(cityName, new OnWeatherResponseListener() {
-                            @Override
-                            public void onResponse(WeatherResponse weatherResponse) {
-                                if (weatherResponse != null) {
-                                    newLocation.setmWeather(weatherResponse);
-                                    // Notify the adapter of the addition
-                                    mAdapter.notifyDataSetChanged();
-                                } else {
-                                    // Remove the added location if the weather data is not available
-                                    LocationsHolder.get(getActivity()).removeLocation(newLocation);
-                                    showErrorToast("Unable to fetch weather data for " + cityName);
+                            // Fetch weather data for the new location
+                            getWeatherByCityName(cityName, new OnWeatherResponseListener() {
+                                @Override
+                                public void onResponse(WeatherResponse weatherResponse) {
+                                    if (weatherResponse != null) {
+                                        newLocation.setmWeather(weatherResponse);
+                                        updateUI();
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // Notify the adapter of the addition
+                                                mAdapter.notifyDataSetChanged();
+                                            }
+                                        });
+                                    } else {
+                                        // Remove the added location if the weather data is not available
+                                        LocationsHolder.get(getActivity()).removeLocation(newLocation);
+                                        showErrorToast("Unable to fetch weather data for " + cityName);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onError() {
-                                // Remove the added location if an error occurs
-                                LocationsHolder.get(getActivity()).removeLocation(newLocation);
-                                showErrorToast("Error: Unable to fetch weather data for " + cityName);
-                            }
-                        });
+                                @Override
+                                public void onError() {
+                                    // Remove the added location if an error occurs
+                                    LocationsHolder.get(getActivity()).removeLocation(newLocation);
+                                    showErrorToast("Error: Unable to fetch weather data for " + cityName);
+                                }
+                            });
+                        }).start();
                     }
                 });
-
 
                 builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
@@ -184,6 +217,7 @@ public class ListFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 
     private void showErrorToast(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
