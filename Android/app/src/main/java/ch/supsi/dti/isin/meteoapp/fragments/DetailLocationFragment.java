@@ -89,6 +89,7 @@ public class DetailLocationFragment extends Fragment {
 
     @SuppressLint("DefaultLocale")
     private String kelvinToCelsius(double kelvin) {
+        //return String.format("%.1f", kelvin);
         return String.format("%.1f", kelvin - 273.15);
     }
 
@@ -137,14 +138,12 @@ public class DetailLocationFragment extends Fragment {
                 }
             }
 
-
             @Override
             public void onFailure(Call<WeatherResponse> call, Throwable t) {
                 Log.e("Error", t.getMessage());
 
             }
         });
-
     }
 
     private void getLocationFromName(String cityNameInput) throws IOException {

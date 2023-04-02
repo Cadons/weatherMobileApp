@@ -47,24 +47,6 @@ public class ListFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-
-/*
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list, container, false);
-        mLocationRecyclerView = view.findViewById(R.id.recycler_view);
-        mLocationRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-        List<Location> locations = LocationsHolder.get(getActivity()).getLocations();
-        mAdapter = new LocationAdapter(locations);
-        mLocationRecyclerView.setAdapter(mAdapter);
-
-        updateUI();
-
-        return view;
-    }
-*/
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list, container, false);

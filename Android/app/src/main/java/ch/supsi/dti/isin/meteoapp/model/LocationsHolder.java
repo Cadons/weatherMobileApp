@@ -6,12 +6,11 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-import ch.supsi.dti.isin.meteoapp.http.WeatherResponse;
-import ch.supsi.dti.isin.meteoapp.model.Location;
-import ch.supsi.dti.isin.meteoapp.model.LocationDB;
 import io.nlopez.smartlocation.OnLocationUpdatedListener;
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.config.LocationAccuracy;
@@ -69,6 +68,89 @@ public class LocationsHolder {
         });
     }
 
+    public static GPSCoordinates getLocalLocation(Context context, final Location location) {
+        GPSCoordinates gpsCoordinates = new GPSCoordinates(0, 0);
+        //smartlocation get location
+        LocationParams.Builder builder = new LocationParams.Builder();
+        builder.setAccuracy(LocationAccuracy.HIGH);
+        builder.setDistance(0);
+        builder.setInterval(1000);
+        SmartLocation.with(context).location().continuous().config(builder.build())
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(android.location.Location location) {
+                        Log.d("loc", "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
+                        gpsCoordinates.setLatitude(location.getLatitude());
+                        gpsCoordinates.setLongitude(location.getLongitude());
+
+                    }
+                });
+        return gpsCoordinates;
+    }
+
+
+    public GPSCoordinates getCurrentLocation(Context context) {
+        final GPSCoordinates[] gpsCoordinates = new GPSCoordinates[1];
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        LocationParams.Builder builder = new LocationParams.Builder();
+        builder.setAccuracy(LocationAccuracy.HIGH);
+        builder.setDistance(0);
+        builder.setInterval(1000);
+        SmartLocation.with(context).location().oneFix().config(builder.build())
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(android.location.Location location) {
+                        Log.d("loc", "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
+                        gpsCoordinates[0] = new GPSCoordinates(location.getLatitude(), location.getLongitude());
+                        latch.countDown();
+                    }
+                });
+
+        try {
+            latch.await(30, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return gpsCoordinates[0];
+    }
+
+
+
+
+
+
+
+
+
+    public void addLocationDB(Location location) {
+        mExecutor.execute(() -> db.locationDao().insertLocation(location));
+        mLocations.add(location);
+    }
+
+    public void removeLocation(Location location) {
+        mExecutor.execute(() -> db.locationDao().deleteLocation(location));
+        mLocations.remove(location);
+    }
+
+    public List<Location> getLocations() {
+        return mLocations;
+    }
+
+    public Location getLocation(UUID id) {
+        for (Location location : mLocations) {
+            if (location.getId().equals(id))
+                return location;
+        }
+
+        return null;
+    }
+}
+
+
+
+
 /*    private void createRealLocations() {
         mExecutor.execute(() -> {
             List<Location> dbLocations = db.locationDao().getLocations();
@@ -111,53 +193,6 @@ public class LocationsHolder {
             }
         });
     }*/
-
-    public static GPSCoordinates getLocalLocation(Context context, final Location location) {
-        GPSCoordinates gpsCoordinates = new GPSCoordinates(0, 0);
-        //smartlocation get location
-        LocationParams.Builder builder = new LocationParams.Builder();
-        builder.setAccuracy(LocationAccuracy.HIGH);
-        builder.setDistance(0);
-        builder.setInterval(1000);
-        SmartLocation.with(context).location().continuous().config(builder.build())
-                .start(new OnLocationUpdatedListener() {
-                    @Override
-                    public void onLocationUpdated(android.location.Location location) {
-                        Log.d("loc", "onLocationUpdated: " + location.getLatitude() + " " + location.getLongitude());
-                        gpsCoordinates.setLatitude(location.getLatitude());
-                        gpsCoordinates.setLongitude(location.getLongitude());
-
-                    }
-                });
-        return gpsCoordinates;
-    }
-
-
-    public void addLocationDB(Location location) {
-        mExecutor.execute(() -> db.locationDao().insertLocation(location));
-        mLocations.add(location);
-    }
-
-    public void removeLocation(Location location) {
-        mExecutor.execute(() -> db.locationDao().deleteLocation(location));
-        mLocations.remove(location);
-    }
-
-    public List<Location> getLocations() {
-        return mLocations;
-    }
-
-    public Location getLocation(UUID id) {
-        for (Location location : mLocations) {
-            if (location.getId().equals(id))
-                return location;
-        }
-
-        return null;
-    }
-
-
-}
 
 
 
