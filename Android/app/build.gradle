@@ -4,7 +4,7 @@ android {
     compileSdkVersion 33
     defaultConfig {
         applicationId "ch.supsi.dti.isin.meteoapp"
-        minSdkVersion 19
+        minSdkVersion 26
         targetSdkVersion 33
         versionCode 1
         versionName "1.0"
@@ -38,7 +38,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.9.0'
-    implementation 'androidx.work:work-runtime:2.8.1'
+    implementation 'androidx.work:work-runtime:2.3.4'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
 }
 

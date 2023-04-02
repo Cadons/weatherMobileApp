@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -39,8 +40,12 @@ import ch.supsi.dti.isin.meteoapp.model.TemperatureWorker;
 public class MainActivity extends AppCompatActivity {
     private GPSCoordinates coordinates;
 
+    //Inizializzando a Double.MIN_VALUE funziona anche a 0 gradi
+    public static double recentTemperature = Double.MIN_VALUE;
+
     private LocationDB db;
     private Bundle savedInstanceStateGlobal;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +67,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         PeriodicWorkRequest temperatureWorkRequest = new PeriodicWorkRequest.Builder(TemperatureWorker.class, 1, TimeUnit.MINUTES)
+                .setInitialDelay(1, TimeUnit.MINUTES)
                 .addTag("temperatureWorkerTag")
                 .build();
-        WorkManager.getInstance(getApplicationContext()).enqueueUniquePeriodicWork("POLL WORK", ExistingPeriodicWorkPolicy.KEEP, temperatureWorkRequest);
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("POLL WORK", ExistingPeriodicWorkPolicy.KEEP, temperatureWorkRequest);
         //WorkManager.getInstance(getApplicationContext()).enqueue(temperatureWorkRequest);
         monitorWorkStatus(temperatureWorkRequest.getId());
 
@@ -72,30 +78,44 @@ public class MainActivity extends AppCompatActivity {
 
     public void requestPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET}, 1);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
         } else {
             open();
-
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     // ho ottenuto i permessi
                     open();
+                } else {
+                    boolean showRationale = false;
+                    for (String permission : permissions) {
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+                            showRationale = true;
+                            break;
+                        }
+                    }
+
+                    if (!showRationale) {
+                        Toast.makeText(MainActivity.this, "Permessi negati. Abilitare manualmente i permessi nelle impostazioni dell'app.", Toast.LENGTH_LONG).show();
+                    } else {
+                        requestPermissions();
+                    }
                 }
                 return;
             }
         }
     }
+
 
     private void open() {
         setContentView(R.layout.fragment_single_fragment);
