@@ -133,7 +133,15 @@ public class DetailLocationFragment extends Fragment {
                 if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
                     cityName.setText(mLocation.getName());
                     temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
-                    description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
+                    String desc=mLocation.getmWeather().getWeather().get(0).getDescription();
+                    String[] words = desc.split("\\s");
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < words.length; i++) {
+                        sb.append(Character.toUpperCase(words[i].charAt(0)));
+                        sb.append(words[i].substring(1));
+                        sb.append(" ");
+                    }
+                    description.setText(sb.toString());
                     weatherIcon.setImageResource(getResources().getIdentifier("drawable/i" + mLocation.getmWeather().getWeather().get(0).getIcon(), null, getActivity().getPackageName()));
                 }
             }
@@ -183,7 +191,15 @@ public class DetailLocationFragment extends Fragment {
                 if (mLocation.getmWeather() != null && mLocation.getmWeather().isReady()) {
                     cityName.setText(mLocation.getName());
                     temperature.setText(kelvinToCelsius(mLocation.getmWeather().getMain().getTemp()) + " °C");
-                    description.setText(mLocation.getmWeather().getWeather().get(0).getDescription());
+                    String desc=mLocation.getmWeather().getWeather().get(0).getDescription();
+                    String[] words = desc.split("\\s");
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < words.length; i++) {
+                        sb.append(Character.toUpperCase(words[i].charAt(0)));
+                        sb.append(words[i].substring(1));
+                        sb.append(" ");
+                    }
+                    description.setText(sb.toString());
                     weatherIcon.setImageResource(getResources().getIdentifier("drawable/i" + mLocation.getmWeather().getWeather().get(0).getIcon(), null, getActivity().getPackageName()));
                 }
             }

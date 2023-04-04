@@ -4,22 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#E4E2E2">
 
     <TextView
         android:id="@+id/weatherDescription"
-        android:layout_width="214dp"
-        android:layout_height="83dp"
+        android:layout_width="228dp"
+        android:layout_height="87dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
+        android:gravity="center"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.578"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/cityNameTextBox"
-        app:layout_constraintVertical_bias="0.042"
+        app:layout_constraintTop_toBottomOf="@+id/weatherIcon"
+        app:layout_constraintVertical_bias="0.066"
         tools:text="Sunny" />
 
     <TextView
@@ -48,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.09"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityNameTextBox">
+        app:layout_constraintTop_toBottomOf="@+id/weatherIcon">
 
         <ImageView
             android:id="@+id/temperatureIcon"
@@ -59,25 +62,28 @@
 
         <TextView
             android:id="@+id/temperatureText"
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
+            android:layout_width="87dp"
+            android:layout_height="74dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:lineSpacingExtra="10sp"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textSize="24sp"
+            android:textSize="20sp"
+            android:textStyle="bold"
             tools:text="19" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/weatherIcon"
-        android:layout_width="150dp"
-        android:layout_height="116dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="190dp"
+        android:layout_height="164dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.084"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/cityNameTextBox"
         tools:srcCompat="@drawable/rainy_sunny" />
 </androidx.constraintlayout.widget.ConstraintLayout>
