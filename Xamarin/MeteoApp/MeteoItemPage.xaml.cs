@@ -1,10 +1,12 @@
-﻿namespace MeteoApp;
+﻿using MeteoApp.Models;
+
+namespace MeteoApp;
 
 [QueryProperty(nameof(Entry), "Entry")]
 public partial class MeteoItemPage : ContentPage
 {
-    Entry entry;
-    public Entry Entry
+    Models.Entry entry;
+    public Models.Entry Entry
     {
         get => entry;
         set

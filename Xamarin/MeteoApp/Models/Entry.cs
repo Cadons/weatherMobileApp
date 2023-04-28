@@ -1,4 +1,4 @@
-﻿namespace MeteoApp
+﻿namespace MeteoApp.Models
 {
     public class Entry
     {

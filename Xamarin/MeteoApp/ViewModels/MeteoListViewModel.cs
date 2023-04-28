@@ -1,6 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using MeteoApp.Models;
+using MeteoApp.Repository;
+using System.Collections.ObjectModel;
+using Entry = MeteoApp.Models.Entry;
 
-namespace MeteoApp
+namespace MeteoApp.ViewModels
 {
     public class MeteoListViewModel : BaseViewModel
     {
@@ -15,6 +18,9 @@ namespace MeteoApp
                 OnPropertyChanged();
             }
         }
+       
+
+       
 
         public MeteoListViewModel()
         {
