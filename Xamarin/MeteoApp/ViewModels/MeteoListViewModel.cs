@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace MeteoApp
 {
@@ -25,8 +24,7 @@ namespace MeteoApp
             {
                 var e = new Entry
                 {
-                    ID = i,
-                    Name = "Entry " + i
+                    Id = i
                 };
 
                 Entries.Add(e);
