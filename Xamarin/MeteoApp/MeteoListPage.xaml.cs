@@ -27,23 +27,19 @@ public partial class MeteoListPage : Shell
     {
         if (e.SelectedItem != null)
         {
-            Models.Entry entry = e.SelectedItem as Models.Entry;
+            Models.City location = e.SelectedItem as City;
 
             var navigationParameter = new Dictionary<string, object>
             {
-                { "Entry", entry }
+      
+                {"city", location }
+                
             };
-          ShowPosition();
-            Shell.Current.GoToAsync($"entrydetails", navigationParameter);
+
+            _ = Current.GoToAsync($"entrydetails", navigationParameter);
         }
     }
-    public async void ShowPosition()
-    {
-        var name = await WeatherRepository.Instance.GetWeatherFromGPSAsync();
-        _ = ShowPrompt(name.Name+" "+name.Id);
-        var x = await WeatherRepository.Instance.GetWeatherByCity("Sorengo");
-        _ = ShowPrompt(x.Name+" "+x.Id);
-    }
+    
 
     private void OnItemAdded(object sender, EventArgs e)
     {

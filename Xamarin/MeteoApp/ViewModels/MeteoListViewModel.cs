@@ -1,39 +1,38 @@
 ﻿using MeteoApp.Models;
 using MeteoApp.Repository;
 using System.Collections.ObjectModel;
-using Entry = MeteoApp.Models.Entry;
+
 
 namespace MeteoApp.ViewModels
 {
     public class MeteoListViewModel : BaseViewModel
     {
-        ObservableCollection<Entry> _entries;
+        ObservableCollection<City> _cities;
 
-        public ObservableCollection<Entry> Entries
+        public ObservableCollection<City> Cities
         {
-            get { return _entries; }
+            get { return _cities; }
             set
             {
-                _entries = value;
+                _cities = value;
                 OnPropertyChanged();
             }
         }
        
+        
 
        
 
         public MeteoListViewModel()
         {
-            Entries = new ObservableCollection<Entry>();
-
-            for (var i = 0; i < 10; i++)
+            Cities = new ObservableCollection<City>();
+            string[] cities = new string[] { "Rome", "Paris", "London" };
+            foreach (var item in cities)
             {
-                var e = new Entry
-                {
-                    Id = i
-                };
+                var e = new City();
+                e.Name = item;
 
-                Entries.Add(e);
+                Cities.Add(e);
             }
         }
     }

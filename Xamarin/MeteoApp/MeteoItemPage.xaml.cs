@@ -2,28 +2,24 @@
 
 namespace MeteoApp;
 
-[QueryProperty(nameof(Entry), "Entry")]
+[QueryProperty(nameof(City), "city")]
 public partial class MeteoItemPage : ContentPage
 {
-    Models.Entry entry;
-    public Models.Entry Entry
-    {
-        get => entry;
-        set
-        {
-            entry = value;
-            OnPropertyChanged();
-        }
-    }
+ public   City City { get; set; }
 
     public MeteoItemPage()
     {
         InitializeComponent();
-        BindingContext = this;
+        BindingContext = new ViewModels.SelectedItemViewModel();
     }
-
     protected override void OnAppearing()
     {
         base.OnAppearing();
+        if (BindingContext is ViewModels.SelectedItemViewModel vm)
+        {
+            if (City != null)
+                vm.City = City;
+        }
     }
+
 }

@@ -4,7 +4,7 @@
              x:Class="MeteoApp.MeteoItemPage">
     <StackLayout x:Name="MainLayout" Spacing="30">
         
-            <Label Text="{Binding Entry.Id}"
+            <Label Text="{Binding City.Name}"
                 FontSize="55"
                 HorizontalOptions="Center" 
                 VerticalOptions="Start" />
