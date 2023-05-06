@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace MeteoApp.ViewModels
 {
-    public class SelectedItemViewModel: BaseViewModel
+    public class SelectedItemViewModel : BaseViewModel
     {
+        
         private City _city=new City();
         public City City
         {

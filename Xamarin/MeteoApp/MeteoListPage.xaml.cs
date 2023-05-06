@@ -23,20 +23,11 @@ public partial class MeteoListPage : Shell
             Routing.RegisterRoute(item.Key, item.Value);
     }
 
-    private async void OnListItemSelected(object sender, SelectedItemChangedEventArgs e)
+    private void OnListItemSelected(object sender, SelectedItemChangedEventArgs e)
     {
         if (e.SelectedItem != null)
         {
-            Models.City location = e.SelectedItem as City;
-
-            var navigationParameter = new Dictionary<string, object>
-            {
-      
-                {"city", location }
-                
-            };
-
-            _ = Current.GoToAsync($"entrydetails", navigationParameter);
+            LoadPage(e.SelectedItem);
         }
     }
     
@@ -49,5 +40,44 @@ public partial class MeteoListPage : Shell
     private async Task ShowPrompt(string s="To implement")
     {
         await DisplayAlert("Add City", s, "OK");
+    }
+
+    private  void Geolocate_Clicked(object sender, EventArgs e)
+    {
+      
+      
+        LoadPage(null,true);
+
+    }
+
+    private async void LoadPage(object e, bool isGps=false)
+    {
+        City location=new City();
+        IWeatherRepository repository = WeatherRepository.Instance;
+        if (!isGps)
+        {
+            location = e as City;
+            
+            location.WeatherData =await repository.GetWeatherByCity(location.Name);
+        }
+        else
+        {
+            WeatherData meteoAndLocation = await repository.GetWeatherFromGPSAsync();
+            location.Name = meteoAndLocation.Name;
+            location.WeatherData = meteoAndLocation;
+        }
+
+        
+
+        SelectedItemViewModel vm = new SelectedItemViewModel();
+        vm.City = location;
+
+        var navigationParameter = new Dictionary<string, object>
+            {
+                {"vm", vm }
+            };
+
+        _ = Current.GoToAsync($"entrydetails", navigationParameter);
+
     }
 }

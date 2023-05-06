@@ -1,25 +1,21 @@
-﻿using MeteoApp.Models;
+﻿using MeteoApp.ViewModels;
 
 namespace MeteoApp;
 
-[QueryProperty(nameof(City), "city")]
+[QueryProperty(nameof(SelectedItemViewModel), "vm")]
 public partial class MeteoItemPage : ContentPage
 {
- public   City City { get; set; }
+    private SelectedItemViewModel vm;
+    public SelectedItemViewModel SelectedItemViewModel { get => vm; set { vm = value; OnPropertyChanged(); } }
 
     public MeteoItemPage()
     {
         InitializeComponent();
-        BindingContext = new ViewModels.SelectedItemViewModel();
     }
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
-        if (BindingContext is ViewModels.SelectedItemViewModel vm)
-        {
-            if (City != null)
-                vm.City = City;
-        }
+        BindingContext = SelectedItemViewModel;
     }
-
 }

@@ -18,10 +18,6 @@ namespace MeteoApp.ViewModels
                 OnPropertyChanged();
             }
         }
-       
-        
-
-       
 
         public MeteoListViewModel()
         {

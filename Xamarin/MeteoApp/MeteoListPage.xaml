@@ -7,6 +7,7 @@
         </ContentPage.ToolbarItems>
         <StackLayout>
             <Label Text="Meteo" FontSize="Large" HorizontalOptions="Center" />
+            <Button Text="Geolocate" Clicked="Geolocate_Clicked"></Button>
             <ListView x:Name="zlistView" Margin="20" ItemSelected="OnListItemSelected" ItemsSource="{Binding Cities}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

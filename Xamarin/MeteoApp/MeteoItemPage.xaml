@@ -8,6 +8,16 @@
                 FontSize="55"
                 HorizontalOptions="Center" 
                 VerticalOptions="Start" />
-        </StackLayout>
+        <Label Text="{Binding City.WeatherData._Weather[0].Description}"
+               FontSize="35"
+                HorizontalOptions="Center" 
+                VerticalOptions="Start" />
+        <Label Text="{Binding City.WeatherData._Main.Temp}"
+               FontSize="35"
+                 HorizontalOptions="Center" 
+                 VerticalOptions="Start" />
+        <Image Source="{Binding City.WeatherData.}"
+
+    </StackLayout>
 </ContentPage>
 
