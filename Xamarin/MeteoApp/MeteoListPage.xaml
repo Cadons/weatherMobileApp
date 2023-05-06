@@ -8,6 +8,8 @@
         <StackLayout>
             <Label Text="Meteo" FontSize="Large" HorizontalOptions="Center" />
             <Button Text="Geolocate" Clicked="Geolocate_Clicked"></Button>
+            <ActivityIndicator IsRunning="false" x:Name="LoadingSpinner"
+                   Color="Blue"  />
             <ListView x:Name="zlistView" Margin="20" ItemSelected="OnListItemSelected" ItemsSource="{Binding Cities}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

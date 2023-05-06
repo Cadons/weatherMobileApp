@@ -12,11 +12,20 @@
                FontSize="35"
                 HorizontalOptions="Center" 
                 VerticalOptions="Start" />
-        <Label Text="{Binding City.WeatherData._Main.Temp}"
+        <Label Text="{Binding City.WeatherData._Main.TempCelsius, StringFormat='Temperature {0} °C'}"
                FontSize="35"
                  HorizontalOptions="Center" 
                  VerticalOptions="Start" />
-        <Image Source="{Binding City.WeatherData.}"
+        <Label Text="{Binding City.WeatherData._Main.TempMinCelsius, StringFormat='Min {0} °C'}"
+               FontSize="35"
+                 HorizontalOptions="Center" 
+                 VerticalOptions="Start" />
+        <Label Text="{Binding City.WeatherData._Main.TempMaxCelsius, StringFormat='Max {0} °C'}"
+               FontSize="35"
+                 HorizontalOptions="Center" 
+                 VerticalOptions="Start" />
+        <Image Source="{Binding City.WeatherData.WeatherIcon}" Aspect="AspectFill"></Image>
+ 
 
     </StackLayout>
 </ContentPage>

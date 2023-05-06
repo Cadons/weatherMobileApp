@@ -27,6 +27,7 @@ public partial class MeteoListPage : Shell
     {
         if (e.SelectedItem != null)
         {
+
             LoadPage(e.SelectedItem);
         }
     }
@@ -37,9 +38,13 @@ public partial class MeteoListPage : Shell
          _ = ShowPrompt();
     }
 
-    private async Task ShowPrompt(string s="To implement")
+    private async Task ShowPrompt()
     {
-        await DisplayAlert("Add City", s, "OK");
+        //show prompt alert
+
+        string result = await DisplayPromptAsync("Add new location", "Insert location name");
+
+        await DisplayAlert("Add City", result, "OK");
     }
 
     private  void Geolocate_Clicked(object sender, EventArgs e)
@@ -54,6 +59,7 @@ public partial class MeteoListPage : Shell
     {
         City location=new City();
         IWeatherRepository repository = WeatherRepository.Instance;
+        this.LoadingSpinner.IsRunning = true;
         if (!isGps)
         {
             location = e as City;
@@ -76,8 +82,9 @@ public partial class MeteoListPage : Shell
             {
                 {"vm", vm }
             };
-
+        this.LoadingSpinner.IsRunning = false;
         _ = Current.GoToAsync($"entrydetails", navigationParameter);
 
     }
+
 }

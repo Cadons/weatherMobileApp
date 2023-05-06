@@ -25,7 +25,7 @@ namespace MeteoApp.Repository
         }
         public async Task<WeatherData> GetWeatherByCity(string city)
         {
-            WeatherData weather = _parseJSON(_getHttpJson(string.Format("{0}q={1}&appid={2}", _API_URL, city, _API_KEY)));
+            WeatherData weather = _parseJSON(await _getHttpJson(string.Format("{0}q={1}&appid={2}", _API_URL, city, _API_KEY)));
             return weather;
         }
 
@@ -38,17 +38,18 @@ namespace MeteoApp.Repository
                 location.Latitude = gps.Latitude;
                 location.Longitude = gps.Longitude;
             }
+       ;
 
-
-            WeatherData weather = _parseJSON(_getHttpJson(string.Format("{0}lat={1}&lon={2}&appid={3}",_API_URL,location.Latitude,location.Longitude,_API_KEY)));
+            WeatherData weather = _parseJSON(await _getHttpJson(string.Format("{0}lat={1}&lon={2}&appid={3}", _API_URL, location.Latitude, location.Longitude, _API_KEY)));
             return weather;
 
         }
-        private string _getHttpJson(string url)
+        private async Task<string> _getHttpJson(string url)
         {
             var httpClient = new HttpClient();
-            var json = httpClient.GetStringAsync(url);
-            return json.Result;
+            var json = await httpClient.GetStringAsync(url);
+            return json;
+            
         }
         private WeatherData _parseJSON(string json)
         {
