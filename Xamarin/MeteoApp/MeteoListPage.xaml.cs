@@ -1,18 +1,112 @@
-﻿using MeteoApp.Models;
+﻿//using MeteoApp.Models;
+//using MeteoApp.Repository;
+//using MeteoApp.ViewModels;
+//namespace MeteoApp;
+
+//public partial class MeteoListPage : Shell
+//{
+//    public Dictionary<string, Type> Routes { get; private set; } = new Dictionary<string, Type>();
+
+//    public MeteoListPage()
+//	{
+//		InitializeComponent();
+//        RegisterRoutes();
+
+//        BindingContext = new MeteoListViewModel();
+//    }
+
+//    private void RegisterRoutes()
+//    {
+//        Routes.Add("entrydetails", typeof(MeteoItemPage));
+
+//        foreach (var item in Routes)
+//            Routing.RegisterRoute(item.Key, item.Value);
+//    }
+
+//    private void OnListItemSelected(object sender, SelectedItemChangedEventArgs e)
+//    {
+//        if (e.SelectedItem != null)
+//        {
+
+//            LoadPage(e.SelectedItem);
+//        }
+//    }
+
+
+//    private void OnItemAdded(object sender, EventArgs e)
+//    {
+//         _ = ShowPrompt();
+//    }
+
+//    private async Task ShowPrompt()
+//    {
+//        //show prompt alert
+
+//        string result = await DisplayPromptAsync("Add new location", "Insert location name");
+
+//        await DisplayAlert("Add City", result, "OK");
+//    }
+
+//    private  void Geolocate_Clicked(object sender, EventArgs e)
+//    {
+
+
+//        LoadPage(null,true);
+
+//    }
+
+//    private async void LoadPage(object e, bool isGps=false)
+//    {
+//        City location=new City();
+//        IWeatherRepository repository = WeatherRepository.Instance;
+//        this.LoadingSpinner.IsRunning = true;
+//        if (!isGps)
+//        {
+//            location = e as City;
+
+//            location.WeatherData =await repository.GetWeatherByCity(location.Name);
+//        }
+//        else
+//        {
+//            WeatherData meteoAndLocation = await repository.GetWeatherFromGPSAsync();
+//            location.Name = meteoAndLocation.Name;
+//            location.WeatherData = meteoAndLocation;
+//        }
+
+
+
+//        SelectedItemViewModel vm = new SelectedItemViewModel();
+//        vm.City = location;
+
+//        var navigationParameter = new Dictionary<string, object>
+//            {
+//                {"vm", vm }
+//            };
+//        this.LoadingSpinner.IsRunning = false;
+//        _ = Current.GoToAsync($"entrydetails", navigationParameter);
+
+//    }
+
+//}
+
+using MeteoApp.Models;
 using MeteoApp.Repository;
 using MeteoApp.ViewModels;
 namespace MeteoApp;
 
 public partial class MeteoListPage : Shell
 {
+    private MeteoListViewModel _viewModel;
+
     public Dictionary<string, Type> Routes { get; private set; } = new Dictionary<string, Type>();
 
     public MeteoListPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         RegisterRoutes();
 
-        BindingContext = new MeteoListViewModel();
+        _viewModel = new MeteoListViewModel();
+        BindingContext = _viewModel;
     }
 
     private void RegisterRoutes()
@@ -31,40 +125,53 @@ public partial class MeteoListPage : Shell
             LoadPage(e.SelectedItem);
         }
     }
-    
 
-    private void OnItemAdded(object sender, EventArgs e)
+    private async void OnItemAdded(object sender, EventArgs e)
     {
-         _ = ShowPrompt();
+        await ShowPrompt();
     }
 
     private async Task ShowPrompt()
     {
-        //show prompt alert
-
         string result = await DisplayPromptAsync("Add new location", "Insert location name");
+        if (string.IsNullOrEmpty(result))
+            return;
 
-        await DisplayAlert("Add City", result, "OK");
+        var repository = WeatherRepository.Instance;
+        var weatherData = await repository.GetWeatherByCity(result);
+
+        if (weatherData != null)
+        {
+            var city = new City { Name = result, WeatherData = weatherData };
+            await App.Database.SaveCityAsync(city);
+            _viewModel.Cities.Add(city);
+
+            await DisplayAlert("Add City", $"City {result} was added successfully.", "OK");
+        }
+        else
+        {
+            await DisplayAlert("Add City", $"City {result} does not exist.", "OK");
+        }
     }
 
-    private  void Geolocate_Clicked(object sender, EventArgs e)
+    private void Geolocate_Clicked(object sender, EventArgs e)
     {
-      
-      
-        LoadPage(null,true);
+
+
+        LoadPage(null, true);
 
     }
 
-    private async void LoadPage(object e, bool isGps=false)
+    private async void LoadPage(object e, bool isGps = false)
     {
-        City location=new City();
+        City location = new City();
         IWeatherRepository repository = WeatherRepository.Instance;
         this.LoadingSpinner.IsRunning = true;
         if (!isGps)
         {
             location = e as City;
-            
-            location.WeatherData =await repository.GetWeatherByCity(location.Name);
+
+            location.WeatherData = await repository.GetWeatherByCity(location.Name);
         }
         else
         {
@@ -73,7 +180,7 @@ public partial class MeteoListPage : Shell
             location.WeatherData = meteoAndLocation;
         }
 
-        
+
 
         SelectedItemViewModel vm = new SelectedItemViewModel();
         vm.City = location;
