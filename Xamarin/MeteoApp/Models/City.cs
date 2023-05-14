@@ -7,7 +7,6 @@ namespace MeteoApp.Models
     {
         public int ID { get; set; }
         public string Name { get; set; }
-        //public WeatherData WeatherData { get; set; }
 
         [Ignore]
         public WeatherData WeatherData
