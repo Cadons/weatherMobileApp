@@ -64,6 +64,7 @@
 	  <None Remove="Models\" />
 	  <None Remove="sqlite-net-pcl" />
 	  <None Remove="Xam.Plugin.Geolocator" />
+	  <None Remove="Resources\.DS_Store" />
 	  <None Remove="Xam.Plugins.Notifier" />
 	  <None Remove="Acr.UserDialogs" />
 	  <None Remove="SQLitePCLRaw.bundle_green" />
