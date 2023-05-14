@@ -34,9 +34,6 @@ public class TemperatureWorker extends Worker {
     private static final String TAG = "TemperatureWorker";
     private LocalDateTime lastNotificationTime;
 
-    //private double recentTemperature = Double.MIN_VALUE;
-
-
     public TemperatureWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
         mContext = context;

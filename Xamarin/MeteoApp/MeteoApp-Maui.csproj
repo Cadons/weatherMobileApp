@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
@@ -59,7 +59,6 @@
 	  <None Remove="Models\" />
 	  <None Remove="sqlite-net-pcl" />
 	  <None Remove="Xam.Plugin.Geolocator" />
-	  <None Remove="Resources\.DS_Store" />
 	  <None Remove="Xam.Plugins.Notifier" />
 	  <None Remove="Acr.UserDialogs" />
 	  <None Remove="SQLitePCLRaw.bundle_green" />
@@ -70,7 +69,6 @@
 	  <Folder Include="NewFolder\" />
 	</ItemGroup>
 	<ItemGroup>
-	  <BundleResource Include="Resources\.DS_Store" />
 	</ItemGroup>
 	<ItemGroup>
 	  <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="MeteoItemPage.xaml">

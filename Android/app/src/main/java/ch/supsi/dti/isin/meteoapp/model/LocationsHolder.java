@@ -88,7 +88,6 @@ public class LocationsHolder {
         return gpsCoordinates;
     }
 
-
     public GPSCoordinates getCurrentLocation(Context context) {
         final GPSCoordinates[] gpsCoordinates = new GPSCoordinates[1];
         final CountDownLatch latch = new CountDownLatch(1);
@@ -115,14 +114,6 @@ public class LocationsHolder {
 
         return gpsCoordinates[0];
     }
-
-
-
-
-
-
-
-
 
     public void addLocationDB(Location location) {
         mExecutor.execute(() -> db.locationDao().insertLocation(location));
