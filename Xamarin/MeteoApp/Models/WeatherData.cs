@@ -45,7 +45,7 @@
         public int Cod { get; set; }
 
         public bool Ready { get; set; } = false;
-        public string WeatherIcon { get => string.Format("https://openweathermap.org/img/wn/{0}.png", _Weather[0].Icon); }
+        public string WeatherIcon { get => string.Format("https://openweathermap.org/img/wn/{0}@2x.png", _Weather[0].Icon); }
 
         public class Coord
         {

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
@@ -29,6 +29,7 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<AssemblyName>MeteoApp</AssemblyName>
+		<PackageIcon>android-app-top-banner.png</PackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
@@ -39,11 +40,11 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" Color="White" />	
+    
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="LightBlue"/>
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
@@ -62,6 +63,8 @@
 
 	<ItemGroup>
 	  <None Remove="Models\" />
+	  <None Remove="Resources\AppIcon\icon.svg" />
+	  <None Remove="Resources\Splash\splash.svg" />
 	  <None Remove="sqlite-net-pcl" />
 	  <None Remove="Xam.Plugin.Geolocator" />
 	  <None Remove="Resources\.DS_Store" />
@@ -74,9 +77,10 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Database\" />
+	  <Folder Include="Resources\NewFolder\" />
 	</ItemGroup>
-	<ItemGroup>
-	</ItemGroup>
+
+
 	<ItemGroup>
 	  <MauiXaml Condition=" '$(EnableDefaultXamlItems)' == 'true' " Update="MeteoItemPage.xaml">
 	    <SubType>Designer</SubType>
